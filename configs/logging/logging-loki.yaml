@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: output-secret-loki
+  namespace: logging
+type: Opaque
+stringData:
+  username: "loki"
+  password: "******************************************************************************"
+---
+
+apiVersion: logging.banzaicloud.io/v1alpha1
+kind: ClusterOutput
+metadata:
+  name: output-loki
+  namespace: logging
+spec:
+  loki:
+    url: https://loki.company.com/
+    username:
+      valueFrom:
+        secretKeyRef:
+          key: username
+          name: output-secret-loki
+
+    password:
+      valueFrom:
+        secretKeyRef:
+          key: password
+          name: output-secret-loki
+
+    configure_kubernetes_labels: true
+    buffer:
+      timekey: 1m
+      timekey_wait: 30s
+      timekey_use_utc: true

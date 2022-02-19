@@ -1,0 +1,17 @@
+apiVersion: logging.banzaicloud.io/v1beta1
+kind: ClusterFlow
+metadata:
+  name: loki-flow-hub
+  namespace: logging
+
+spec:
+  match:
+    - select:
+        namespaces:
+          - app-prod
+          - app-stage
+#        container_names: [ ]
+#        hosts: [ ]
+#        labels: { }
+  globalOutputRefs:
+    - output-loki

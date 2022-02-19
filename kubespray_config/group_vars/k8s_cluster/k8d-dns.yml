@@ -1,0 +1,36 @@
+# DNS configuration.
+# Kubernetes cluster name, also will be used as DNS domain
+# WARNING Add k8s prefix always(coredns not resolve external host)
+cluster_name: k8s.cluster.company.com
+# Subdomains of DNS domain to be resolved via /etc/resolv.conf for hostnet pods
+ndots: 2
+# Can be coredns, coredns_dual, manual or none
+dns_mode: coredns
+# Set manual server if using a custom cluster DNS server
+# manual_dns_server: 10.x.x.x
+# Enable nodelocal dns cache
+enable_nodelocaldns: true
+enable_nodelocaldns_secondary: false
+nodelocaldns_ip: 169.254.25.10
+nodelocaldns_health_port: 9254
+nodelocaldns_second_health_port: 9256
+nodelocaldns_bind_metrics_host_ip: false
+nodelocaldns_secondary_skew_seconds: 5
+# nodelocaldns_external_zones:
+# - zones:
+#   - example.com
+#   - example.io:1053
+#   nameservers:
+#   - 1.1.1.1
+#   - 2.2.2.2
+#   cache: 5
+# - zones:
+#   - https://mycompany.local:4453
+#   nameservers:
+#   - 192.168.0.53
+#   cache: 0
+# Enable k8s_external plugin for CoreDNS
+enable_coredns_k8s_external: false
+coredns_k8s_external_zone: k8s_external.local
+# Enable endpoint_pod_names option for kubernetes plugin
+enable_coredns_k8s_endpoint_pod_names: false

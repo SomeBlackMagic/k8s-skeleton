@@ -1,0 +1,244 @@
+alertmanager:
+  enabled: true
+  alertmanagerSpec:
+    additionalPeers: []
+    affinity: {}
+    alertmanagerConfigNamespaceSelector: {}
+    alertmanagerConfigSelector: {}
+    clusterAdvertiseAddress: false
+    configMaps: []
+    containers: []
+    externalUrl: null
+    forceEnableClusterMode: false
+    image:
+      repository: rancher/mirrored-prometheus-alertmanager
+      sha: ''
+      tag: v0.22.2
+    initContainers: []
+    listenLocal: false
+    logFormat: logfmt
+    logLevel: info
+    nodeSelector: {}
+    paused: false
+    podAntiAffinity: ''
+    podAntiAffinityTopologyKey: kubernetes.io/hostname
+    podMetadata: {}
+    portName: web
+    priorityClassName: ''
+    replicas: 1
+    resources:
+      limits:
+        cpu: 500m
+        memory: 500Mi
+      requests:
+        cpu: 100m
+        memory: 100Mi
+    retention: 120h
+    routePrefix: /
+    secrets: []
+    securityContext:
+      fsGroup: 2000
+      runAsGroup: 2000
+      runAsNonRoot: true
+      runAsUser: 1000
+    storage: {}
+    tolerations: []
+    topologySpreadConstraints: []
+    useExistingSecret: true
+    volumeMounts: []
+    volumes: []
+    configSecret: alertmanager-rancher-monitoring-alertmanager
+  apiVersion: v2
+  config:
+    global:
+      resolve_timeout: 5m
+    receivers:
+      - name: 'null'
+    route:
+      group_by:
+        - job
+      group_interval: 1m
+      group_wait: 30s
+      receiver: 'null'
+      repeat_interval: 1m
+      routes:
+        - match:
+            alertname: Watchdog
+          receiver: 'null'
+    templates:
+      - /etc/alertmanager/config/*.tmpl
+  extraSecret:
+    annotations: {}
+    data: {}
+  ingress:
+    annotations: {}
+    enabled: false
+    hosts: []
+    labels: {}
+    paths: []
+    tls: []
+  ingressPerReplica:
+    annotations: {}
+    enabled: false
+    hostDomain: ''
+    hostPrefix: ''
+    labels: {}
+    paths: []
+    tlsSecretName: ''
+    tlsSecretPerReplica:
+      enabled: false
+      prefix: alertmanager
+  podDisruptionBudget:
+    enabled: false
+    maxUnavailable: ''
+    minAvailable: 1
+  service:
+    additionalPorts: []
+    annotations: {}
+    clusterIP: ''
+    externalIPs: []
+    labels: {}
+    loadBalancerIP: ''
+    loadBalancerSourceRanges: []
+    nodePort: 30903
+    port: 9093
+    targetPort: 9093
+    type: ClusterIP
+  serviceAccount:
+    annotations: {}
+    create: true
+    name: ''
+  serviceMonitor:
+    bearerTokenFile: null
+    interval: ''
+    metricRelabelings: []
+    proxyUrl: ''
+    relabelings: []
+    scheme: ''
+    selfMonitor: true
+    tlsConfig: {}
+  servicePerReplica:
+    annotations: {}
+    enabled: false
+    loadBalancerSourceRanges: []
+    nodePort: 30904
+    port: 9093
+    targetPort: 9093
+    type: ClusterIP
+  templateFiles:
+    rancher_defaults.tmpl: >-
+      {{- define "slack.rancher.text" -}}
+      {{ template "rancher.text_multiple" . }}
+      {{- end -}}
+
+      {{- define "rancher.text_multiple" -}}
+      *[GROUP - Details]*
+      One or more alarms in this group have triggered a notification.
+
+      {{- if gt (len .GroupLabels.Values) 0 }}
+
+      *Group Labels:*
+        {{- range .GroupLabels.SortedPairs }}
+        • *{{ .Name }}:* `{{ .Value }}`
+        {{- end }}
+      {{- end }}
+
+      {{- if .ExternalURL }}
+
+      *Link to AlertManager:* {{ .ExternalURL }}
+
+      {{- end }}
+
+
+      {{- range .Alerts }}
+
+      {{ template "rancher.text_single" . }}
+
+      {{- end }}
+
+      {{- end -}}
+
+
+      {{- define "rancher.text_single" -}}
+
+      {{- if .Labels.alertname }}
+
+      *[ALERT - {{ .Labels.alertname }}]*
+
+      {{- else }}
+
+      *[ALERT]*
+
+      {{- end }}
+
+      {{- if .Labels.severity }}
+
+      *Severity:* `{{ .Labels.severity }}`
+
+      {{- end }}
+
+      {{- if .Labels.cluster }}
+
+      *Cluster:*  {{ .Labels.cluster }}
+
+      {{- end }}
+
+      {{- if .Annotations.summary }}
+
+      *Summary:* {{ .Annotations.summary }}
+
+      {{- end }}
+
+      {{- if .Annotations.message }}
+
+      *Message:* {{ .Annotations.message }}
+
+      {{- end }}
+
+      {{- if .Annotations.description }}
+
+      *Description:* {{ .Annotations.description }}
+
+      {{- end }}
+
+      {{- if .Annotations.runbook_url }}
+
+      *Runbook URL:* <{{ .Annotations.runbook_url }}|:spiral_note_pad:>
+
+      {{- end }}
+
+      {{- with .Labels }}
+
+      {{- with .Remove (stringSlice "alertname" "severity" "cluster") }}
+
+      {{- if gt (len .) 0 }}
+
+      *Additional Labels:*
+        {{- range .SortedPairs }}
+        • *{{ .Name }}:* `{{ .Value }}`
+        {{- end }}
+      {{- end }}
+
+      {{- end }}
+
+      {{- end }}
+
+      {{- with .Annotations }}
+
+      {{- with .Remove (stringSlice "summary" "message" "description"
+      "runbook_url") }}
+
+      {{- if gt (len .) 0 }}
+
+      *Additional Annotations:*
+        {{- range .SortedPairs }}
+        • *{{ .Name }}:* `{{ .Value }}`
+        {{- end }}
+      {{- end }}
+
+      {{- end }}
+
+      {{- end }}
+
+      {{- end -}}
+  tplConfig: false

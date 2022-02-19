@@ -1,0 +1,317 @@
+additionalPrometheusRulesMap: {}
+commonLabels: {}
+coreDns:
+  enabled: true
+  service:
+    port: 9153
+    targetPort: 9153
+  serviceMonitor:
+    interval: ''
+    metricRelabelings: []
+    proxyUrl: ''
+    relabelings: []
+defaultRules:
+  additionalRuleLabels: {}
+  annotations: {}
+  appNamespacesTarget: .*
+  create: true
+  labels: {}
+  rules:
+    alertmanager: true
+    etcd: true
+    general: true
+    k8s: true
+    kubeApiserver: true
+    kubeApiserverAvailability: true
+    kubeApiserverError: true
+    kubeApiserverSlos: true
+    kubePrometheusGeneral: true
+    kubePrometheusNodeAlerting: true
+    kubePrometheusNodeRecording: true
+    kubeScheduler: true
+    kubeStateMetrics: true
+    kubelet: true
+    kubernetesAbsent: true
+    kubernetesApps: true
+    kubernetesResources: true
+    kubernetesStorage: true
+    kubernetesSystem: true
+    network: true
+    node: true
+    prometheus: true
+    prometheusOperator: true
+    time: true
+  runbookUrl: >-
+    https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#
+fullnameOverride: ''
+global:
+  cattle:
+    systemDefaultRegistry: ''
+    windows:
+      enabled: false
+  imagePullSecrets: []
+  kubectl:
+    pullPolicy: IfNotPresent
+    repository: rancher/kubectl
+    tag: v1.20.2
+  rbac:
+    create: true
+    pspAnnotations: {}
+    pspEnabled: true
+    userRoles:
+      aggregateToDefaultRoles: true
+      create: true
+ingressNginx:
+  enabled: false
+  namespace: ingress-nginx
+  service:
+    port: 9913
+    targetPort: 10254
+  serviceMonitor:
+    interval: ''
+    metricRelabelings: []
+    proxyUrl: ''
+    relabelings: []
+k3sServer:
+  enabled: false
+kube-state-metrics:
+  namespaceOverride: ''
+  podSecurityPolicy:
+    enabled: true
+  rbac:
+    create: true
+  resources:
+    limits:
+      cpu: 100m
+      memory: 200Mi
+    requests:
+      cpu: 100m
+      memory: 130Mi
+kubeAdmControllerManager:
+  clients:
+    https:
+      enabled: true
+      insecureSkipVerify: true
+      useServiceAccountCredentials: true
+    nodeSelector:
+      node-role.kubernetes.io/master: ''
+    port: 10011
+    tolerations:
+      - effect: NoExecute
+        operator: Exists
+      - effect: NoSchedule
+        operator: Exists
+    useLocalhost: true
+  component: kube-controller-manager
+  enabled: false
+  metricsPort: 10257
+kubeAdmEtcd:
+  clients:
+    nodeSelector:
+      node-role.kubernetes.io/master: ''
+    port: 10014
+    tolerations:
+      - effect: NoExecute
+        operator: Exists
+      - effect: NoSchedule
+        operator: Exists
+    useLocalhost: true
+  component: kube-etcd
+  enabled: false
+  metricsPort: 2381
+kubeAdmProxy:
+  clients:
+    port: 10013
+    tolerations:
+      - effect: NoExecute
+        operator: Exists
+      - effect: NoSchedule
+        operator: Exists
+    useLocalhost: true
+  component: kube-proxy
+  enabled: false
+  metricsPort: 10249
+kubeAdmScheduler:
+  clients:
+    https:
+      enabled: true
+      insecureSkipVerify: true
+      useServiceAccountCredentials: true
+    nodeSelector:
+      node-role.kubernetes.io/master: ''
+    port: 10012
+    tolerations:
+      - effect: NoExecute
+        operator: Exists
+      - effect: NoSchedule
+        operator: Exists
+    useLocalhost: true
+  component: kube-scheduler
+  enabled: false
+  metricsPort: 10259
+kubeApiServer:
+  enabled: true
+  serviceMonitor:
+    interval: ''
+    jobLabel: component
+    metricRelabelings: []
+    proxyUrl: ''
+    relabelings: []
+    selector:
+      matchLabels:
+        component: apiserver
+        provider: kubernetes
+  tlsConfig:
+    insecureSkipVerify: false
+    serverName: kubernetes
+kubeControllerManager:
+  enabled: false
+  endpoints: []
+  service:
+    enabled: true
+    port: 10252
+    targetPort: 10252
+  serviceMonitor:
+    enabled: true
+    https: false
+    insecureSkipVerify: null
+    interval: ''
+    metricRelabelings: []
+    proxyUrl: ''
+    relabelings: []
+    serverName: null
+kubeDns:
+  enabled: false
+  service:
+    dnsmasq:
+      port: 10054
+      targetPort: 10054
+    skydns:
+      port: 10055
+      targetPort: 10055
+  serviceMonitor:
+    dnsmasqMetricRelabelings: []
+    dnsmasqRelabelings: []
+    interval: ''
+    metricRelabelings: []
+    proxyUrl: ''
+    relabelings: []
+kubeEtcd:
+  enabled: false
+  endpoints: []
+  service:
+    enabled: true
+    port: 2379
+    targetPort: 2379
+  serviceMonitor:
+    caFile: ''
+    certFile: ''
+    enabled: true
+    insecureSkipVerify: false
+    interval: ''
+    keyFile: ''
+    metricRelabelings: []
+    proxyUrl: ''
+    relabelings: []
+    scheme: http
+    serverName: ''
+kubeProxy:
+  enabled: false
+  endpoints: []
+  service:
+    enabled: true
+    port: 10249
+    targetPort: 10249
+  serviceMonitor:
+    enabled: true
+    https: false
+    interval: ''
+    metricRelabelings: []
+    proxyUrl: ''
+    relabelings: []
+kubeScheduler:
+  enabled: false
+  endpoints: []
+  service:
+    enabled: true
+    port: 10251
+    targetPort: 10251
+  serviceMonitor:
+    enabled: true
+    https: false
+    insecureSkipVerify: null
+    interval: ''
+    metricRelabelings: []
+    proxyUrl: ''
+    relabelings: []
+    serverName: null
+kubeStateMetrics:
+  enabled: true
+  serviceMonitor:
+    honorLabels: true
+    interval: ''
+    metricRelabelings: []
+    proxyUrl: ''
+    relabelings: []
+    scrapeTimeout: ''
+    selectorOverride: {}
+    selfMonitor:
+      enabled: false
+kubeTargetVersionOverride: ''
+kubeVersionOverride: ''
+kubelet:
+  enabled: true
+  namespace: kube-system
+  serviceMonitor:
+    cAdvisor: true
+    cAdvisorMetricRelabelings: []
+    cAdvisorRelabelings:
+      - sourceLabels:
+          - __metrics_path__
+        targetLabel: metrics_path
+    https: true
+    interval: ''
+    probes: true
+    probesMetricRelabelings: []
+    probesRelabelings:
+      - sourceLabels:
+          - __metrics_path__
+        targetLabel: metrics_path
+    proxyUrl: ''
+    relabelings:
+      - sourceLabels:
+          - __metrics_path__
+        targetLabel: metrics_path
+    resource: false
+    resourcePath: /metrics/resource/v1alpha1
+    resourceRelabelings:
+      - sourceLabels:
+          - __metrics_path__
+        targetLabel: metrics_path
+nameOverride: rancher-monitoring
+namespaceOverride: cattle-monitoring-system
+#other
+rke2ControllerManager:
+  enabled: false
+rke2Etcd:
+  enabled: false
+rke2IngressNginx:
+  enabled: false
+rke2Proxy:
+  enabled: false
+rke2Scheduler:
+  enabled: false
+rkeControllerManager:
+  enabled: false
+rkeEtcd:
+  enabled: false
+rkeIngressNginx:
+  enabled: false
+rkeProxy:
+  enabled: false
+rkeScheduler:
+  enabled: false
+hardenedKubelet:
+  enabled: false
+hardenedNodeExporter:
+  enabled: false

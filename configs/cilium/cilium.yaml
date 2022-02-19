@@ -1,0 +1,58 @@
+debug:
+  # -- Enable debug logging
+  enabled: true
+
+tunnel: "geneve"
+
+cni:
+  containerRuntime: containerd
+
+ipam:
+  # -- Configure IP Address Management mode.
+  # ref: https://docs.cilium.io/en/stable/concepts/networking/ipam/
+  mode: "kubernetes"
+
+
+# -- The priority class to use for cilium-agent.
+priorityClassName: "high-priority-nonpreempting"
+
+resources:
+  limits:
+    cpu: 1000m
+    memory: 4Gi
+  requests:
+    cpu: 100m
+    memory: 512Mi
+
+
+hubble:
+  # -- Enable Hubble (true by default).
+  enabled: true
+  relay:
+    enabled: true
+  ui:
+    # -- Whether to enable the Hubble UI.
+    enabled: true
+  metrics:
+    # -- Configures the list of metrics to collect. If empty or null, metrics
+    enabled:
+      - dns:query;ignoreAAAA
+      - drop
+      - tcp
+      - flow
+      - icmp
+      - http
+    serviceMonitor:
+      enabled: false
+
+operator:
+  prometheus:
+    enabled: true
+    serviceMonitor:
+      enabled: false
+
+prometheus:
+  enabled: true
+  serviceMonitor:
+    enabled: false
+

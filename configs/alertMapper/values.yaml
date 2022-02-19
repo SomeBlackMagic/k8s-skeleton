@@ -1,0 +1,20 @@
+image:
+  tag: v0.1.1
+
+app:
+  envSecrets:
+    APP_ENV: prod
+    APP_INPUT_ALERTMANAGER_ENV: 'prod'
+    APP_INPUT_ALERTMANAGER_RESOURCE: 'k8s.company.com'
+    APP_OUTPUT_ALERTA_ENABLED: 'true'
+    APP_OUTPUT_ALERTA_TOKEN: "**************"
+    APP_OUTPUT_ALERTA_URL: https://alerta.company.com/api
+
+resources:
+  enabled: true
+  limits:
+    cpu: 400m
+    memory: 200Mi
+  requests:
+    cpu: 100m
+    memory: 100Mi

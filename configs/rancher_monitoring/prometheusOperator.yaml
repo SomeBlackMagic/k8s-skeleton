@@ -1,0 +1,92 @@
+prometheusOperator:
+  admissionWebhooks:
+    caBundle: ''
+    certManager:
+      enabled: false
+    enabled: true
+    failurePolicy: Fail
+    patch:
+      affinity: {}
+      enabled: true
+      image:
+        pullPolicy: IfNotPresent
+        repository: rancher/mirrored-ingress-nginx-kube-webhook-certgen
+        sha: ''
+        tag: v1.0
+      nodeSelector: {}
+      podAnnotations: {}
+      priorityClassName: ''
+      resources: {}
+      securityContext:
+        runAsGroup: 2000
+        runAsNonRoot: true
+        runAsUser: 2000
+      tolerations: []
+  affinity: {}
+  alertmanagerInstanceNamespaces: []
+  configReloaderCpu: 100m
+  configReloaderMemory: 50Mi
+  denyNamespaces: []
+  dnsConfig: {}
+  enabled: true
+  hostNetwork: false
+  image:
+    pullPolicy: IfNotPresent
+    repository: rancher/mirrored-prometheus-operator-prometheus-operator
+    sha: ''
+    tag: v0.50.0
+  kubeletService:
+    enabled: true
+    namespace: kube-system
+  namespaces: {}
+  nodeSelector: {}
+  podAnnotations: {}
+  podLabels: {}
+  prometheusConfigReloaderImage:
+    repository: rancher/mirrored-prometheus-operator-prometheus-config-reloader
+    sha: ''
+    tag: v0.50.0
+  prometheusInstanceNamespaces: []
+  resources:
+    limits:
+      cpu: 200m
+      memory: 500Mi
+    requests:
+      cpu: 100m
+      memory: 100Mi
+  secretFieldSelector: ''
+  securityContext:
+    fsGroup: 65534
+    runAsGroup: 65534
+    runAsNonRoot: true
+    runAsUser: 65534
+  service:
+    additionalPorts: []
+    annotations: {}
+    clusterIP: ''
+    externalIPs: []
+    labels: {}
+    loadBalancerIP: ''
+    loadBalancerSourceRanges: []
+    nodePort: 30080
+    nodePortTls: 30443
+    type: ClusterIP
+  serviceAccount:
+    create: true
+    name: ''
+  serviceMonitor:
+    interval: ''
+    metricRelabelings: []
+    relabelings: []
+    scrapeTimeout: ''
+    selfMonitor: true
+  thanosImage:
+    repository: rancher/mirrored-thanos-thanos
+    sha: ''
+    tag: v0.17.2
+  thanosRulerInstanceNamespaces: []
+  tls:
+    enabled: true
+    internalPort: 8443
+    tlsMinVersion: VersionTLS13
+  tolerations: []

@@ -1,0 +1,3 @@
+nodeExporter:
+  enabled: true
+  jobLabel: jobLabel

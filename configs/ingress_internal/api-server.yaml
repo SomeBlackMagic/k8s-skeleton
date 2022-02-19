@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: kubernetes-api
+  namespace: default
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-company-com
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+spec:
+  ingressClassName: internal
+  tls:
+    - hosts:
+        - api-server.cluster.company.com
+      secretName: kubernetes-api-cert
+  rules:
+    - host: api-server.cluster.company.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: kubernetes
+                port:
+                  number: 6443

@@ -1,0 +1,37 @@
+# https://particule.io/en/blog/kubeadm-metrics-server/
+
+priorityClassName: high-priority-nonpreempting
+
+containerPort: 4443
+
+replicas: 2
+
+resources:
+  limits:
+    cpu: 100m
+    memory: 200Mi
+  requests:
+    cpu: 100m
+    memory: 200Mi
+
+tolerations:
+  - key: node-role.kubernetes.io/master
+    effect: NoSchedule
+
+service:
+  labels:
+  #  Add these labels to have metrics-server show up in `kubectl cluster-info dump`
+    kubernetes.io/cluster-service: "true"
+    kubernetes.io/name: "Metrics-server"
+
+
+#affinity:
+#  podAntiAffinity:
+#    preferredDuringSchedulingIgnoredDuringExecution:
+#      - weight: 1
+#        podAffinityTerm:
+#          labelSelector:
+#            matchLabels:
+#              app.kubernetes.io/name: {{ $.Chart.Name }}
+#              app.kubernetes.io/instance: {{ $.Release.Name }}
+#          topologyKey: kubernetes.io/hostname

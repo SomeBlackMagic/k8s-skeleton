@@ -1,0 +1,115 @@
+grafana:
+  enabled: true
+  additionalDataSources: []
+  adminPassword: prom-operator
+  defaultDashboards:
+    cleanupOnUninstall: false
+    namespace: cattle-dashboards
+    useExistingNamespace: false
+  defaultDashboardsEnabled: true
+  defaultDashboardsTimezone: utc
+  deploymentStrategy:
+    type: Recreate
+  extraConfigmapMounts: []
+  extraContainerVolumes:
+    - emptyDir: {}
+      name: nginx-home
+    - configMap:
+        items:
+          - key: nginx.conf
+            mode: 438
+            path: nginx.conf
+        name: grafana-nginx-proxy-config
+      name: grafana-nginx
+  extraContainers: |
+    - name: grafana-proxy
+      args:
+      - nginx
+      - -g
+      - daemon off;
+      - -c
+      - /nginx/nginx.conf
+      image: "{{ template "system_default_registry" . }}{{ .Values.proxy.image.repository }}:{{ .Values.proxy.image.tag }}"
+      ports:
+      - containerPort: 8080
+        name: nginx-http
+        protocol: TCP
+      volumeMounts:
+      - mountPath: /nginx
+        name: grafana-nginx
+      - mountPath: /var/cache/nginx
+        name: nginx-home
+      securityContext:
+        runAsUser: 101
+        runAsGroup: 101
+  forceDeployDashboards: false
+  forceDeployDatasources: false
+  grafana.ini:
+    auth:
+      disable_login_form: false
+    auth.anonymous:
+      enabled: true
+      org_role: Viewer
+    auth.basic:
+      enabled: false
+    dashboards:
+      default_home_dashboard_path: /tmp/dashboards/rancher-default-home.json
+    security:
+      allow_embedding: true
+    users:
+      auto_assign_org_role: Viewer
+  ingress:
+    annotations: {}
+    enabled: false
+    hosts: []
+    labels: {}
+    path: /
+    tls: []
+  namespaceOverride: ''
+  proxy:
+    image:
+      repository: rancher/mirrored-library-nginx
+      tag: 1.21.1-alpine
+  resources:
+    limits:
+      cpu: 200m
+      memory: 200Mi
+    requests:
+      cpu: 100m
+      memory: 100Mi
+  service:
+    nodePort: 30950
+    port: 80
+    portName: nginx-http
+    targetPort: 8080
+    type: ClusterIP
+  serviceMonitor:
+    interval: ''
+    metricRelabelings: []
+    path: /metrics
+    relabelings: []
+    selfMonitor: true
+  sidecar:
+    dashboards:
+      enabled: true
+      label: grafana_dashboard
+      multicluster:
+        etcd:
+          enabled: false
+        global:
+          enabled: false
+      provider:
+        allowUiUpdates: false
+      searchNamespace: cattle-dashboards
+    datasources:
+      createPrometheusReplicasDatasources: false
+      defaultDatasourceEnabled: true
+      enabled: true
+      label: grafana_datasource
+  persistence:
+    enabled: true
+    accessModes:
+      - ReadWriteOnce
+    storageClassName: longhorn-local
+    size: 20Gi
+    type: pvc

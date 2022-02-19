@@ -1,0 +1,7 @@
+prometheus-adapter:
+  enabled: true
+  prometheus:
+    port: 9090
+    url: http://rancher-monitoring-prometheus.cattle-monitoring-system.svc
+  psp:
+    create: true

@@ -1,0 +1,57 @@
+apiVersion: logging.banzaicloud.io/v1beta1
+kind: Logging
+metadata:
+  name: logging-apps
+  namespace: logging
+spec:
+  controlNamespace: logging
+#  watchNamespaces:
+#    - si-prd
+#    - si-stg
+  fluentbit:
+    resources:
+      requests:
+        cpu: 300m
+        memory: 500M
+      limits:
+        cpu: 500m
+        memory: 1Gi
+    metrics:
+      serviceMonitor: true
+    nodeSelector:
+      kubernetes.io/os: linux
+    security:
+      podSecurityPolicyCreate: true
+      roleBasedAccessControlCreate: true
+    tolerations:
+      - effect: NoSchedule
+        key: node-role.kubernetes.io/controlplane
+        value: 'true'
+      - effect: NoExecute
+        key: node-role.kubernetes.io/etcd
+        value: 'true'
+  fluentd:
+    fluentOutLogrotate:
+      enabled: true
+      path: /dev/stdout
+    logLevel: trace
+    resources:
+      requests:
+        cpu: 1
+        memory: 1Gi
+      limits:
+        cpu: 2
+        memory: 2Gi
+    metrics:
+      serviceMonitor: true
+    disablePvc: true
+    livenessProbe:
+      initialDelaySeconds: 30
+      periodSeconds: 15
+      tcpSocket:
+        port: 24240
+    nodeSelector:
+      kubernetes.io/os: linux
+    security:
+      podSecurityPolicyCreate: true
+      roleBasedAccessControlCreate: true

@@ -1,0 +1,78 @@
+## nginx configuration
+## Ref: https://github.com/kubernetes/ingress-nginx/blob/master/controllers/nginx/configuration.md
+##
+controller:
+  replicaCount: 1
+
+  minAvailable: 1
+  config:
+    ##################### Base config #####################
+    worker-processes: "16"
+    max-worker-connections: "100000"
+    worker-cpu-affinity: "auto 111111111111111111111111"
+    disable-access-log: "true"
+    upstream-keepalive-requests: "10000000"
+    upstream-keepalive-timeout: "315"
+    error-log-level: "error"
+    enable-multi-accept: "true"
+    use-gzip: "true"
+
+  priorityClassName: 'high-priority-nonpreempting'
+  scope:
+    enabled: false
+  hostNetwork: true
+  annotations:
+    prometheus.io/port: '11254'
+    prometheus.io/scrape: 'true'
+  # Configures the ports the nginx-controller listens on
+  containerPort:
+    http: 8888
+    https: 8443
+  extraArgs:
+    http-port: 8888 #80
+    https-port: 8443 #443
+    default-server-port: 8182 #8181
+    profiler-port: 11245 #10245
+    status-port: 11246 #10246
+    stream-port: 11247 #10247
+    healthz-port: 11254 #10254
+  ## Name of the ingress class to route through this controller
+  ##
+  # This section refers to the creation of the IngressClass resource
+  # IngressClass resources are supported since k8s >= 1.18 and required since k8s >= 1.19
+  ingressClassResource:
+    name: internal
+
+  nodeSelector:
+    node-role.kubernetes.io/ingress: ingress
+  tolerations:
+    - key: "node-role.kubernetes.io/ingress"
+      operator: "Exists"
+      effect: "NoSchedule"
+    - key: "node-role.kubernetes.io/master"
+      operator: "Exists"
+      effect: "NoSchedule"
+
+
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+  livenessProbe:
+    httpGet:
+      port: 11254
+  readinessProbe:
+    httpGet:
+      port: 11254
+  service:
+    enabled: true
+    type: ClusterIP
+  metrics:
+    enabled: false
+  admissionWebhooks:
+    port: 8442
+## Default 404 backend
+##
+defaultBackend:
+  ##
+  enabled: false
